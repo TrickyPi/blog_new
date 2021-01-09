@@ -1,0 +1,20 @@
+version: '3'
+
+services: 
+  db:
+    image: mongo
+    ports:
+      - 27017:27017
+  server:
+    build: ./server
+    ports:
+      - 3000:3000
+    depends_on:
+      - db
+  website:
+    build: ./page
+    ports:
+      - 80:80
+    depends_on:
+      - server
+
