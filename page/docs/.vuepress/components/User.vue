@@ -89,7 +89,7 @@ export default {
                     this.premissionLoading = false;
                 });
         } else {
-            this.visitor = { ...this.$visitor };
+            this.visitor = { name, avatar };
         }
     }
 };
