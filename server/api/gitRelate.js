@@ -1,7 +1,8 @@
 const rpn = require("request-promise-native");
 const auth_uri = "https://github.com/login/oauth/access_token";
 //提供自己github应用id和secret
-const { CLIENT_ID, CLIENT_SECRET } = require("./secret.js");
+const CLIENT_ID = process.env.GITHUB_CLIENT_ID
+const CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET
 /**
  * 用token换取头像信息
  * @param {*} token
@@ -27,8 +28,8 @@ exports.rpnToken = (code) => {
         method: "POST",
         url: auth_uri,
         body: {
-            client_id,
-            client_secret,
+            client_id: CLIENT_ID,
+            client_secret: CLIENT_SECRET,
             code
         },
         json: true
