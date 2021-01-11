@@ -1,7 +1,8 @@
 FROM node:lts as build-stage
 WORKDIR /app
 COPY package*.json ./
-RUN npm install
+RUN npm config set registry https://registry.npm.taobao.org
+RUN npm i
 COPY . .
 RUN npm run docs:build
 FROM nginx:1.16.1

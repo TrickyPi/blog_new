@@ -28,10 +28,11 @@ export default {
     methods: {
         getCommentLists() {
             //get all Comment
-            getAllComment().then(res => {
-                console.log(res);
-                this.commentLists = res.data;
-            });
+            getAllComment()
+                .then(res => {
+                    this.commentLists = res.data;
+                })
+                .catch(err => {});
         }
     },
     created() {

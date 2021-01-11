@@ -38,9 +38,11 @@ export default {
                 content: this.content,
                 name: this.$visitor.name,
                 avatar_url: this.$visitor.avatar
-            }).then(res => {
-                this.$emit("reloadCommentLists");
-            });
+            })
+                .then(res => {
+                    this.$emit("reloadCommentLists");
+                })
+                .catch(err => {});
         }
     }
 };
