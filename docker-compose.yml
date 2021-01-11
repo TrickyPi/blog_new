@@ -1,23 +1,22 @@
-version: '3'
+version: "3"
 
-services: 
-  db:
-    image: mongo
-    ports:
-      - 27017:27017
-  server:
-    build: ./server
-    ports:
-      - 3001:3001
-    environment:
-      GITHUB_CLIENT_ID:
-      GITHUB_CLIENT_SECRET:
-    depends_on:
-      - db
-  website:
-    build: ./page
-    ports:
-      - 80:80
-    depends_on:
-      - server
-
+services:
+    db:
+        image: mongo
+        ports:
+            - 27017:27017
+    server:
+        build: ./server
+        ports:
+            - 3001:3001
+        environment:
+            GITHUB_CLIENT_ID:
+            GITHUB_CLIENT_SECRET:
+        depends_on:
+            - db
+    website:
+        build: ./page
+        ports:
+            - 80:80
+        depends_on:
+            - server
