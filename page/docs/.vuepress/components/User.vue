@@ -1,11 +1,6 @@
 <template>
     <div class="visitor" @click="login">
-        <img
-            v-if="visitor.avatar"
-            :src="visitor.avatar"
-            alt=""
-            class="user-avator"
-        />
+        <img v-if="avatar" :src="avatar" alt="" class="user-avator" />
         <svg
             v-else
             t="1609595013294"
@@ -27,69 +22,47 @@
         <span
             :style="{
                 marginLeft: '6px',
-                cursor: visitor.avatar ? 'default' : 'pointer'
+                cursor: isLogin ? 'default' : 'pointer'
             }"
-            >{{ name }}</span
+            >{{ renderText }}</span
         >
     </div>
 </template>
 <script>
 import { turnToOAuth } from "../app/auth/";
-import { getToken } from "../app/api/";
 export default {
-    data() {
-        return {
-            visitor: {},
-            premissionLoading: false
-        };
+    props: {
+        name: {
+            type: String,
+            default: ""
+        },
+        avatar: {
+            type: String,
+            default: ""
+        },
+        premissionLoading: {
+            type: Boolean,
+            default: false
+        },
+        isLogin: {
+            type: Boolean,
+            default: false
+        }
     },
     methods: {
         login() {
-            if (
-                (!this.visitor.name || !this.visitor.avatar) &&
-                !this.premissionLoading
-            ) {
+            if (!this.isLogin && !this.premissionLoading) {
                 turnToOAuth();
             }
         }
     },
     computed: {
-        name() {
+        renderText() {
             if (this.premissionLoading) {
                 return "登入中...";
             } else {
-                return this.visitor.name || "请登入";
+                return this.isLogin ? this.name : "请登入";
             }
-        }
-    },
-    mounted() {
-        /**
-         * 因为vuepress是ssg生成，所以没有window对象，只有在mounted之后执行window相关的api
-         */
-        const name =
-            this.$visitor.name || window.localStorage.getItem("visitor_name");
-        const avatar =
-            this.$visitor.avatar ||
-            window.localStorage.getItem("visitor_avatar");
-        const code = this.$route.query.code;
-        if (code && !name && !avatar) {
-            this.premissionLoading = true;
-            getToken({ code })
-                .then(res => {
-                    window.localStorage.setItem("visitor_name", res.data.name);
-                    window.localStorage.setItem(
-                        "visitor_avatar",
-                        res.data.avatar_url
-                    );
-                    this.$visitor.name = res.data.name;
-                    this.$visitor.avatar = res.data.avatar_url;
-                    this.visitor = { ...this.$visitor };
-                })
-                .finally(() => {
-                    this.premissionLoading = false;
-                });
-        } else {
-            this.visitor = { name, avatar };
         }
     }
 };

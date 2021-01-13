@@ -1,6 +1,11 @@
 <template>
     <div class="comment">
-        <User></User>
+        <User
+            :name="name"
+            :avatar="avatar"
+            :premissionLoading="premissionLoading"
+            :isLogin="isLogin"
+        ></User>
         <input
             type="text"
             class="comment-input"
@@ -11,7 +16,7 @@
     </div>
 </template>
 <script>
-import { postComment } from "../app/api/";
+import { postComment, getToken } from "../app/api/";
 import User from "../components/User.vue";
 export default {
     name: "CommentEmit",
@@ -20,14 +25,22 @@ export default {
     },
     data() {
         return {
-            content: ""
+            content: "",
+            name: "",
+            avatar: "",
+            premissionLoading: false
         };
+    },
+    computed: {
+        isLogin() {
+            return !!(this.name || this.avatar);
+        }
     },
     methods: {
         submit() {
             //提交评论
-            if (!this.$visitor.name || !this.$visitor.avatar) {
-                alert("please login in ");
+            if (!this.isLogin) {
+                alert("请登录！");
                 return;
             }
             if (!this.content) {
@@ -36,13 +49,37 @@ export default {
             }
             postComment({
                 content: this.content,
-                name: this.$visitor.name,
-                avatar_url: this.$visitor.avatar
+                name: this.name,
+                avatar_url: this.avatar
             })
                 .then(res => {
                     this.$emit("reloadCommentLists");
+                    this.content = "";
                 })
                 .catch(err => {});
+        }
+    },
+    mounted() {
+        /**
+         * 因为vuepress是ssg生成，所以没有window对象，只有在mounted之后执行window相关的api
+         */
+        const { name, avatar } = this.$getGobalUser();
+        const code = this.$route.query.code;
+        if (code && !name && !avatar) {
+            this.premissionLoading = true;
+            getToken({ code })
+                .then(res => {
+                    const { name, avatar_url } = res.data;
+                    this.name = name;
+                    this.avatar = avatar_url;
+                    this.$setGobalUser(name, avatar_url);
+                })
+                .finally(() => {
+                    this.premissionLoading = false;
+                });
+        } else {
+            this.name = name;
+            this.avatar = avatar;
         }
     }
 };

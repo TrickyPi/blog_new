@@ -5,6 +5,9 @@ services:
         image: mongo
         ports:
             - 27017:27017
+        restart: always
+        volumes:
+            - ../database/mongo:/data/db
     server:
         build: ./server
         ports:

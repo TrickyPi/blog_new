@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const DB_URL = "mongodb://db:27017";
 
-mongoose.connect(DB_URL);
+mongoose.connect(DB_URL, { useNewUrlParser: true, useUnifiedTopology: true });
 
 mongoose.connection.on("connected", function () {
     console.log("Mongoose connection open to " + DB_URL);
