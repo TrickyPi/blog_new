@@ -1,5 +1,3 @@
 dist/
 interview/
-secret.js
-Todo.md
-/data
+node_modules/
